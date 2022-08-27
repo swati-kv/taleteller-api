@@ -5,4 +5,5 @@ type CreateStoryRequest struct {
 	Description string `json:"description,omitempty"`
 	Mood        string `json:"mood,omitempty"`
 	Category    string `json:"category,omitempty"`
+	CustomerID  string `json:"customer_id"`
 }
