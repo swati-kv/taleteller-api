@@ -48,7 +48,8 @@ func (s storyStore) GetStoryByID(ctx context.Context, storyID string) (storyResp
 }
 func (s storyStore) UpdateScene(ctx context.Context, storyID string, sceneID string, selectedImage string) (scene Scene, err error) {
 	err = s.db.GetContext(ctx, &scene, updateScene, selectedImage, storyID, sceneID)
-	return}
+	return
+}
 func (s storyStore) CreateScene(ctx context.Context, request CreateSceneRequest) (err error) {
 	//TODO implement me
 	_, err = s.db.ExecContext(ctx, createScene,

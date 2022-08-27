@@ -12,7 +12,7 @@ LOG_SOURCE_LOCATION_ENABLE: false
 
 # Database
 DB_HOST: "localhost"
-DB_PORT: 5433
+DB_PORT: 5432
 DB_NAME: "crewX"
 DB_USER: "postgres"
 DB_PASSWORD: "postgres"

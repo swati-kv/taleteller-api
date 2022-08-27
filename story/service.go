@@ -441,7 +441,7 @@ func (s *service) Publish(ctx context.Context, req []UpdateSceneOrderReq, storyI
 
 	awsService := utils.NewAWSService()
 	awsRequest := utils.UploadS3{
-		File:       vid.Data,
+		FileName:   vid.Data,
 		FileType:   "video",
 		FileFormat: "mp4",
 		FileBytes:  data,

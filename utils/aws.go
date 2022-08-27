@@ -70,7 +70,7 @@ func (s *service) UploadFileV2(bucket string, request UploadS3, isPublic bool) (
 	// Create an uploader with the session and default options
 	uploader := s3manager.NewUploader(sess)
 
-	key := s.generateKey(request.FileType, request.FileFormat)
+	key := s.generateKey(request.FileType, request.FileFormat, request.FileName)
 
 	var contentType *string
 	//var conEnc *string

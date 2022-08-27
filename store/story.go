@@ -25,8 +25,7 @@ type Scene struct {
 	SelectedImage       string     `db:"selected_image,omitempty" json:"selected_image"`
 	Status              string     `db:"status,omitempty" json:"status,omitempty"`
 	SceneNumber         int        `db:"scene_number,omitempty" json:"scene-number,omitempty"`
-	SelectedImage       string     `db:"selected_image" json:"selected-image"`
-	SelectedImagePath   string     `db:"path"`
+	SelectedImagePath   string     `db:"path" json:"selected-image-path,omitempty"`
 	CreatedAt           *time.Time `db:"created_at" json:"created-at,omitempty"`
 	UpdatedAt           *time.Time `db:"updated_at" json:"updated-at,omitempty"`
 }
