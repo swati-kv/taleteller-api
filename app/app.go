@@ -24,7 +24,6 @@ func Init() (err error) {
 	}
 
 	context.ServiceConfig = InitServiceConfig()
-	fmt.Println("yml - ", context.ServiceConfig.GetSample())
 
 	zapLogger, err := logger.SetupLogger(context.ServiceConfig.GetEnv())
 	if err != nil {
@@ -80,7 +79,7 @@ func initDB() (err error) {
 	password := "postgres"
 	host := "localhost"
 	port := 5432
-	dbName := "dpay"
+	dbName := "crewX"
 	err = db.Init(&db.Config{
 		Driver:       "postgres",
 		URL:          ConnectionURL(user, password, host, port, dbName),

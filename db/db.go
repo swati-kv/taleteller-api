@@ -80,3 +80,7 @@ func NewDB(config *Config) (*sqlx.DB, error) {
 func Close() error {
 	return db.Close()
 }
+
+func Get() *sqlx.DB {
+	return db
+}
