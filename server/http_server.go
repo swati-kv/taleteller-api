@@ -15,13 +15,13 @@ import (
 	middlewarestd "github.com/slok/go-http-metrics/middleware/std"
 )
 
-func startHTTPServer() (err error) {
+func startHTTPServer(dependencies Dependencies) (err error) {
 	//port := config.AppPort()
 	//metricsPort := config.MetricsPort()
 	addr := fmt.Sprintf(":%s", strconv.Itoa(8001))
 	//metricsAddr := fmt.Sprintf(":%s", strconv.Itoa(metricsPort))
 
-	muxRouter := initRouter()
+	muxRouter := initRouter(dependencies)
 	// metrics middleware
 	metricsMdw := mdw.New(mdw.Config{
 		Recorder: metrics.NewRecorder(metrics.Config{}),
