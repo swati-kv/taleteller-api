@@ -6,25 +6,29 @@ import (
 )
 
 type serviceConfig struct {
-	Sample        string
-	Environment   string
-	user          string
-	password      string
-	localhost     string
-	port          int
-	dbName        string
-	publishBucket string
+	Sample                   string
+	Environment              string
+	user                     string
+	password                 string
+	localhost                string
+	port                     int
+	dbName                   string
+	pyServerBaseURL          string
+	awsRegion                string
+	awsAccessKeyID           string
+	awsSecretAccessKey       string
+	awsGeneratedAssetsBucket string
 }
 
 func InitServiceConfig() serviceConfig {
 	return serviceConfig{
 		Sample:                   ReadEnvString("SAMPLE"),
 		Environment:              ReadEnvString("ENVIRONMENT"),
-		user:        ReadEnvString("DB_USER"),
-		password:    ReadEnvString("DB_PASSWORD"),
-		localhost:   ReadEnvString("DB_HOST"),
-		port:        ReadEnvInt("DB_PORT"),
-		dbName:      ReadEnvString("DB_NAME"),
+		user:                     ReadEnvString("DB_USER"),
+		password:                 ReadEnvString("DB_PASSWORD"),
+		localhost:                ReadEnvString("DB_HOST"),
+		port:                     ReadEnvInt("DB_PORT"),
+		dbName:                   ReadEnvString("DB_NAME"),
 		pyServerBaseURL:          ReadEnvString("PYTHON_SERVER_BASE_URL"),
 		awsRegion:                ReadEnvString("AWS_REGION"),
 		awsAccessKeyID:           ReadEnvString("AWS_ACCESS_KEY_ID"),
@@ -60,7 +64,6 @@ func (s *serviceConfig) GetEnv() string {
 func (s *serviceConfig) GetPythonServerBaseURL() string {
 	return s.pyServerBaseURL
 }
-
 
 func (s *serviceConfig) GetUser() string {
 	return s.user

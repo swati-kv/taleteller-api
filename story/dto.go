@@ -35,6 +35,11 @@ type PyImageResponse struct {
 	Error string `json:"error"`
 }
 
+type PyVideoResponse struct {
+	Data  string `json:"data"`
+	Error string `json:"error"`
+}
+
 type CreateStoryResponse struct {
 	StoryID string `json:"story_id,omitempty"`
 }
@@ -42,4 +47,12 @@ type CreateStoryResponse struct {
 type UpdateSceneOrderReq struct {
 	SceneID     string `json:"scene_id"`
 	SceneNumber int64  `json:"scene_number"`
+}
+
+type PublishRequest struct {
+	Images      []string `json:"images,omitempty"`
+	ImageFormat string   `json:"imgfmt"`
+	Audios      []string `json:"audio,omitempty"`
+	AudioFormat string   `json:"audiofmt"`
+	BGM         []string `json:"bgm,omitempty"`
 }

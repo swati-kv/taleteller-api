@@ -1,0 +1,1 @@
+alter table scene drop column background_audio_path

@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 )
+
 type CreateStoryRequest struct {
 	StoryID     string    `db:"id"`
 	Name        string    `db:"name"`
@@ -23,8 +24,15 @@ type Scene struct {
 	BackgroundAudioPath string     `db:"background_audio_path,omitempty" json:"background-audio-path,omitempty"`
 	Status              string     `db:"status,omitempty" json:"status,omitempty"`
 	SceneNumber         int        `db:"scene_number,omitempty" json:"scene-number,omitempty"`
+	SelectedImage       string     `db:"selected_image" json:"selected-image"`
+	SelectedImagePath   string     `db:"path"`
 	CreatedAt           *time.Time `db:"created_at" json:"created-at,omitempty"`
 	UpdatedAt           *time.Time `db:"updated_at" json:"updated-at,omitempty"`
+}
+
+type GeneratedAudio struct {
+	ID   string `db:"id"`
+	Path string `db:"path"`
 }
 
 type Story struct {
@@ -59,5 +67,5 @@ type StoryStorer interface {
 	List(ctx context.Context, status string) (stories []Story, err error)
 	CreateScene(ctx context.Context, request CreateSceneRequest) (err error)
 	InsertImage(ctx context.Context, request InsertImage) (err error)
-	UpdateScene(ctx context.Context, sceneID string, sceneNumber int64, storyID string) (err error)
+	UpdateSceneOrder(ctx context.Context, sceneID string, sceneNumber int64, storyID string) (scene Scene, err error)
 }
