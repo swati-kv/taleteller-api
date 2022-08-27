@@ -6,14 +6,15 @@ import (
 )
 
 type Scene struct {
-	ID                string     `db:"id,omitempty" json:"id,omitempty"`
-	StoryID           string     `db:"story_id,omitempty" json:"story-id,omitempty"`
-	GeneratedAudioID  string     `db:"generated_audio_id,omitempty" json:"generated-audio-id,omitempty"`
-	BackgroundAudioID string     `db:"background_audio_id,omitempty" json:"background-audio-id,omitempty"`
-	Status            string     `db:"status,omitempty" json:"status,omitempty"`
-	SceneNumber       int        `db:"scene_number,omitempty" json:"scene-number,omitempty"`
-	CreatedAt         *time.Time `db:"created_at" json:"created-at"`
-	UpdatedAt         *time.Time `db:"updated_at" json:"updated-at"`
+	ID                  string     `db:"id,omitempty" json:"id,omitempty"`
+	StoryID             string     `db:"story_id,omitempty" json:"story-id,omitempty"`
+	GeneratedAudioID    string     `db:"generated_audio_id,omitempty" json:"generated-audio-id,omitempty"`
+	GeneratedAudioPath  string     `json:"generated-audio-path" db:"path,omitempty"`
+	BackgroundAudioPath *string    `db:"background_audio_path,omitempty" json:"background-audio-path,omitempty"`
+	Status              string     `db:"status,omitempty" json:"status,omitempty"`
+	SceneNumber         int        `db:"scene_number,omitempty" json:"scene-number,omitempty"`
+	CreatedAt           *time.Time `db:"created_at" json:"created-at,omitempty"`
+	UpdatedAt           *time.Time `db:"updated_at" json:"updated-at,omitempty"`
 }
 
 type Story struct {
@@ -26,7 +27,7 @@ type Story struct {
 	Status       string    `db:"status" json:"status,omitempty"`
 	CreatedAt    time.Time `db:"created_at" json:"created_at"`
 	UpdatedAt    time.Time `db:"updated_at" json:"updated_at"`
-	SceneDetails []Scene   `json:"scene-details"`
+	SceneDetails []Scene   `json:"scene-details,omitempty"`
 }
 
 type StoryStorer interface {

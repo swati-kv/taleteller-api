@@ -31,9 +31,7 @@ func (s storyStore) Create(ctx context.Context, c Story) (err error) {
 }
 func (s storyStore) GetStoryByID(ctx context.Context, storyID string) (storyResponse Story, err error) {
 	err = s.db.GetContext(ctx, &storyResponse, getStoryByID, storyID)
-
 	err = s.db.SelectContext(ctx, &storyResponse.SceneDetails, getSceneByID, storyID)
-
 	return
 }
 func NewStoryStore(db *sqlx.DB) *storyStore {
