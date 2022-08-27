@@ -3,7 +3,16 @@ package store
 const (
 	createStory = `INSERT INTO public.story
 (id, name, mood, category, description, customer_id, status, created_at, updated_at)
-VALUES($1, $2, $3, $4, $5, $6, $7, $8,$9);
+VALUES($1, $2, $3, $4, $5, $6, $7, $8,$9);`
+
+	createScene = `INSERT INTO public.scene
+(id, story_id, status, scene_number, created_at, updated_at)
+VALUES($1, $2, $3, $4, $5, $6);
+`
+
+	insertImage = `INSERT INTO public.image
+(id, "path", scene_id, is_deleted, created_at, updated_at)
+VALUES($1, $2, $3, $4, $5, $6);
 `
 	getStoryByID = `SELECT * FROM public.story WHERE id = $1`
 
@@ -13,4 +22,12 @@ VALUES($1, $2, $3, $4, $5, $6, $7, $8,$9);
 FROM story WHERE status = $1`
 
 	updateScene = `UPDATE public.scene SET selected_image = $1 where story_id = $2 and id = $3 RETURNING *`
+	insertAudio = `INSERT INTO public.generated_audio
+(id, "path", created_at, updated_at)
+VALUES($1, $2, $3, $4);
+`
+	updateAudioInScene = `UPDATE public.scene
+SET generated_audio_id=$1, updated_at=$3
+WHERE id=$2;
+`
 )
