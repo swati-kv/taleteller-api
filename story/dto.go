@@ -17,9 +17,8 @@ type CreateSceneRequest struct {
 }
 
 type CreateSceneResponse struct {
-	Prompt          string `json:"prompt"`
-	Audio           string `json:"audio"`
-	BackgroundMusic string `json:"background_music"`
+	Status  string `json:"status"`
+	SceneID string `json:"scene_id"`
 }
 
 type PyImageRequest struct {
@@ -32,5 +31,15 @@ type PyImageResponse struct {
 		GeneratedImage       []string `json:"generatedImgs"`
 		GeneratedImageFormat string   `json:"generatedImgsFormat"`
 	} `json:"data"`
+	Error string `json:"error"`
+}
+
+type PyAudioRequest struct {
+	Prompt   string `json:"prompt"`
+	Language string `json:"lang"`
+}
+
+type PyAudioResponse struct {
+	Data  string `json:"data"`
 	Error string `json:"error"`
 }

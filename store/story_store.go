@@ -10,7 +10,7 @@ type storyStore struct {
 	db *sqlx.DB
 }
 
-func (s storyStore) InsertImage(ctx context.Context, request InsertImage) (err error) {
+func (s storyStore) InsertImage(ctx context.Context, request InsertImageRequest) (err error) {
 	_, err = s.db.ExecContext(ctx, insertImage,
 		request.ID,
 		request.ImagePath,
@@ -54,6 +54,25 @@ func (s storyStore) CreateScene(ctx context.Context, request CreateSceneRequest)
 		request.Status,
 		request.SceneNumber,
 		time.Now(),
+		time.Now(),
+	)
+	return
+}
+
+func (s *storyStore) InsertAudio(ctx context.Context, request InsertAudioRequest) (err error) {
+	_, err = s.db.ExecContext(ctx, insertAudio,
+		request.ID,
+		request.AudioPath,
+		time.Now(),
+		time.Now(),
+	)
+	return
+}
+
+func (s *storyStore) UpdateSceneAudio(ctx context.Context, id string, sceneID string) (err error) {
+	_, err = s.db.ExecContext(ctx, updateAudioInScene,
+		id,
+		sceneID,
 		time.Now(),
 	)
 	return

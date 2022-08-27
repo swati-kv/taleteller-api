@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 )
+
 type CreateStoryRequest struct {
 	StoryID     string    `db:"id"`
 	Name        string    `db:"name"`
@@ -47,9 +48,15 @@ type CreateSceneRequest struct {
 	SceneNumber int64
 }
 
-type InsertImage struct {
+type InsertImageRequest struct {
 	ID        string
 	ImagePath string
+	SceneID   string
+}
+
+type InsertAudioRequest struct {
+	ID        string
+	AudioPath string
 	SceneID   string
 }
 
@@ -58,5 +65,7 @@ type StoryStorer interface {
 	Create(ctx context.Context, createRequest Story) (err error)
 	List(ctx context.Context, status string) (stories []Story, err error)
 	CreateScene(ctx context.Context, request CreateSceneRequest) (err error)
-	InsertImage(ctx context.Context, request InsertImage) (err error)
+	InsertImage(ctx context.Context, request InsertImageRequest) (err error)
+	InsertAudio(ctx context.Context, request InsertAudioRequest) (err error)
+	UpdateSceneAudio(background context.Context, id string, sceneID string) (err error)
 }
