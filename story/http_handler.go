@@ -27,3 +27,23 @@ func HandleStoryCreate(service Service) http.HandlerFunc {
 		})
 	})
 }
+
+func HandleGetStoryStatus(service Service) http.HandlerFunc {
+	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		var err error
+		ctx := req.Context()
+		id := req.URL.Query().Get("id")
+		status, err := service.GetStoryStatus(ctx, id)
+		if err != nil {
+			logger.Errorw(req.Context(), "error getting status", "error", err.Error(), "storyID", id)
+			api.RespondWithError(rw, http.StatusInternalServerError, api.Response{
+				Error: "error getting status",
+			})
+			return
+		}
+
+		api.RespondWithJSON(rw, http.StatusOK, api.Response{
+			Data: status,
+		})
+	})
+}

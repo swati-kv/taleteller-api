@@ -24,8 +24,11 @@ func (s storyStore) Create(ctx context.Context, c CreateStoryRequest) (err error
 		time.Now())
 	return
 }
-
-func NewStoryStore(db *sqlx.DB) StoryStorer {
+func (s storyStore) GetStoryByID(ctx context.Context, storyID string) (storyResponse GetStoryResponse, err error) {
+	err = s.db.GetContext(ctx, &storyResponse, getStoryByID, storyID)
+	return
+}
+func NewStoryStore(db *sqlx.DB) *storyStore {
 	return &storyStore{
 		db: db,
 	}

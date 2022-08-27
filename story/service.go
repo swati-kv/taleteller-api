@@ -10,6 +10,7 @@ import (
 
 type Service interface {
 	Create(ctx context.Context, createRequest CreateStoryRequest) (err error)
+	GetStoryStatus(ctx context.Context, storyID string) (status string, err error)
 }
 
 type service struct {
@@ -17,7 +18,7 @@ type service struct {
 	generatorUtils utils.IDGeneratorUtils
 }
 
-func NewService(store store.StoryStorer, generatorUtils utils.IDGeneratorUtils) Service {
+func NewService(store store.StoryStorer, generatorUtils utils.IDGeneratorUtils) *service {
 	return &service{
 		store:          store,
 		generatorUtils: generatorUtils,
@@ -49,5 +50,15 @@ func (s *service) Create(ctx context.Context, createRequest CreateStoryRequest) 
 		logger.Error(ctx, "error creating story", err.Error())
 		return
 	}
+	return
+}
+
+func (s *service) GetStoryStatus(ctx context.Context, storyID string) (status string, err error) {
+	config, err := s.store.GetStoryByID(ctx, storyID)
+	if err != nil {
+		logger.Errorw(ctx, "error getting story by story ID", "error", err.Error())
+		return
+	}
+	status = config.Status
 	return
 }
