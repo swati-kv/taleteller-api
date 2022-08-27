@@ -7,7 +7,7 @@ import (
 	"taleteller/logger"
 )
 
-func HandleStoryCreate() http.HandlerFunc {
+func HandleStoryCreate(service Service) http.HandlerFunc {
 	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		var createRequest CreateStoryRequest
 
@@ -19,6 +19,8 @@ func HandleStoryCreate() http.HandlerFunc {
 			})
 			return
 		}
+
+		err = service.Create(req.Context(), createRequest)
 
 		api.RespondWithJSON(rw, http.StatusOK, api.Response{
 			Data: "done",
