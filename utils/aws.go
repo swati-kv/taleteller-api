@@ -35,7 +35,7 @@ func (s *service) UploadFile(bucket string, request UploadS3, isPublic bool) (pa
 	// Create an uploader with the session and default options
 	uploader := s3manager.NewUploader(sess)
 
-	key := s.generateKey(request.FileType, request.FileFormat)
+	key := s.generateKey(request.FileType, request.FileFormat, request.FileName)
 
 	inputRequest := &s3manager.UploadInput{
 		Bucket: &bucket,
@@ -56,10 +56,12 @@ func (s *service) UploadFile(bucket string, request UploadS3, isPublic bool) (pa
 	return result.Location, err
 }
 
-func (s *service) generateKey(fileType string, fileFormat string) (key string) {
-	generatedUUID := uuid.New()
+func (s *service) generateKey(fileType string, fileFormat string, fileName string) (key string) {
+	if len(fileName) == 0 {
+		fileName = uuid.New().String()
+	}
 
-	key = fileType + "/" + generatedUUID.String() + "." + fileFormat
+	key = fileType + "/" + fileName + "." + fileFormat
 
 	return
 }

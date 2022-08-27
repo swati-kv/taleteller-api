@@ -1,9 +1,11 @@
 package story
 
 const (
-	createSceneEndPoint = "dalle"
+	createImageEndPoint = "dalle"
+	createAudioEndPoint = "v2/tts/b64"
 )
 
 const (
-	statusStarted = "started"
+	statusStarted    = "started"
+	statusProcessing = "processing"
 )
