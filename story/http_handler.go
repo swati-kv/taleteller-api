@@ -120,3 +120,24 @@ func HandleCreateScene(service Service) http.HandlerFunc {
 		})
 	})
 }
+
+func HandleGetScene(service Service) http.HandlerFunc {
+	return func(rw http.ResponseWriter, req *http.Request) {
+		ctx := req.Context()
+		vars := mux.Vars(req)
+		storyID := vars["storyID"]
+		sceneID := vars["sceneID"]
+
+		ctx = context.WithValue(ctx, "story-id", storyID)
+		ctx = context.WithValue(ctx, "scene-id", sceneID)
+
+		response, err := service.GetScene(ctx)
+		if err != nil {
+			logger.Errorw(ctx, "error while getting scene", "error", err.Error())
+			return
+		}
+
+		api.RespondWithJSON(rw, http.StatusOK, api.Response{Data: response})
+
+	}
+}

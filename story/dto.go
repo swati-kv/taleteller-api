@@ -43,3 +43,13 @@ type PyAudioResponse struct {
 	Data  string `json:"data"`
 	Error string `json:"error"`
 }
+
+type ImageDetails struct {
+	ImageID   string `json:"image_id"`
+	ImagePath string `json:"image_path"`
+}
+
+type GetSceneResponse struct {
+	Status string         `json:"status"`
+	Images []ImageDetails `json:"images"`
+}

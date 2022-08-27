@@ -22,6 +22,7 @@ type Service interface {
 	CreateScene(ctx context.Context, createSceneRequest CreateSceneRequest) (response CreateSceneResponse, err error)
 	GetStory(ctx context.Context, storyID string) (storyDetails store.Story, err error)
 	List(ctx context.Context, status string) (stories []store.Story, err error)
+	GetScene(ctx context.Context) (response GetSceneResponse, err error)
 }
 
 type service struct {
@@ -200,6 +201,8 @@ func (s *service) processGenerateImage(response PyImageResponse, sceneID string,
 		}
 
 	}
+
+	s.store.UpdateSceneStatus(context.Background(), "image", sceneID, statusImageDone)
 	return
 }
 
@@ -297,6 +300,8 @@ func (s *service) processGeneratedAudio(response PyAudioResponse, sceneID string
 		return
 	}
 
+	s.store.UpdateSceneStatus(context.Background(), "audio", sceneID, statusImageDone)
+
 	return
 }
 
@@ -322,6 +327,39 @@ func (s *service) GetStory(ctx context.Context, storyID string) (storyDetails st
 		logger.Errorw(ctx, "error getting story by story ID", "error", err.Error())
 		return
 	}
+	return
+}
+
+func (s *service) GetScene(ctx context.Context) (response GetSceneResponse, err error) {
+	storyID := ctx.Value("story-id").(string)
+	sceneID := ctx.Value("scene-id").(string)
+
+	dbResponse, err := s.store.GetSceneByID(ctx, sceneID, storyID)
+	if err != nil {
+		logger.Errorw(ctx, "error while getting scene", "error", err.Error())
+		return
+	}
+	if len(dbResponse) == 0 {
+		err = errors.New("invalid id")
+		logger.Errorw(ctx, "no rowns selected")
+		return
+	}
+	for _, resp := range dbResponse {
+		fmt.Println("in for")
+		if resp.Status != "completed" {
+			response.Status = resp.Status
+			fmt.Println("return here - ", resp.Status)
+			return
+		}
+		var imageDetails ImageDetails
+		imageDetails = ImageDetails{
+			ImageID:   resp.ImageID,
+			ImagePath: resp.ImagePath,
+		}
+
+		response.Images = append(response.Images, imageDetails)
+	}
+	response.Status = "completed"
 	return
 }
 
