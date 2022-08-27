@@ -10,7 +10,8 @@ import (
 
 type Service interface {
 	Create(ctx context.Context, createRequest CreateStoryRequest) (err error)
-	List(ctx context.Context) (stories []store.Story, err error)
+	GetStory(ctx context.Context, storyID string) (storyDetails store.Story, err error)
+	List(ctx context.Context, status string) (stories []store.Story, err error)
 }
 
 type service struct {
@@ -18,7 +19,7 @@ type service struct {
 	generatorUtils utils.IDGeneratorUtils
 }
 
-func NewService(store store.StoryStorer, generatorUtils utils.IDGeneratorUtils) Service {
+func NewService(store store.StoryStorer, generatorUtils utils.IDGeneratorUtils) *service {
 	return &service{
 		store:          store,
 		generatorUtils: generatorUtils,
@@ -53,10 +54,19 @@ func (s *service) Create(ctx context.Context, createRequest CreateStoryRequest) 
 	return
 }
 
-func (s *service) List(ctx context.Context) (stories []store.Story, err error) {
-	stories, err = s.store.List(ctx)
+func (s *service) GetStory(ctx context.Context, storyID string) (storyDetails store.Story, err error) {
+	storyDetails, err = s.store.GetStoryByID(ctx, storyID)
 	if err != nil {
-		logger.Error(ctx, "error creating story", err.Error())
+		logger.Errorw(ctx, "error getting story by story ID", "error", err.Error())
+		return
+	}
+	return
+}
+
+func (s *service) List(ctx context.Context, status string) (stories []store.Story, err error) {
+	stories, err = s.store.List(ctx, status)
+	if err != nil {
+		logger.Error(ctx, "error getting stories", err.Error())
 		return
 	}
 	return

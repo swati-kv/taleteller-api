@@ -4,11 +4,10 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"net/http"
-	"time"
-
-	"taleteller/logger"
 	"github.com/gojektech/heimdall/v6/httpclient"
+	"net/http"
+	"taleteller/logger"
+	"time"
 )
 
 func Post(
