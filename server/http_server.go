@@ -29,7 +29,7 @@ func startHTTPServer(dependencies Dependencies) (err error) {
 
 	headersOk := handlers.AllowedHeaders([]string{constants.ContentType, constants.Authorization, constants.VerificationToken, constants.UserAgent, constants.TimeZone})
 	originsOk := handlers.AllowedOrigins([]string{"*"})
-	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "PATCH", "OPTIONS"})
 
 	corsHandler := handlers.CORS(headersOk, originsOk, methodsOk)(muxRouter)
 	logHandler := middleware.RequestLoggerHandler(corsHandler)

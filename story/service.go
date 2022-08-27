@@ -24,6 +24,8 @@ type Service interface {
 	GetStory(ctx context.Context, storyID string) (storyDetails store.Story, err error)
 	List(ctx context.Context, status string) (stories []store.Story, err error)
 	Publish(ctx context.Context, req []UpdateSceneOrderReq, storyID string) (path string, err error)
+	UpdateScene(ctx context.Context, storyID string, sceneID string, selectedImage string) (updatedScene store.Scene, err error)
+	GetScene(ctx context.Context) (response GetSceneResponse, err error)
 }
 
 type service struct {
@@ -94,26 +96,32 @@ func (s *service) CreateScene(ctx context.Context, createSceneRequest CreateScen
 		return
 	}
 
+	//TODO handle defer
+
 	go func() {
 		s.generateImage(ctx, createSceneRequest, sceneID)
 		wg.Done()
 	}()
 
-	fmt.Println("generating ...")
+	go func() {
+		s.generateAudio(ctx, createSceneRequest, sceneID)
+		wg.Done()
+	}()
+	response.Status = statusProcessing
+	response.SceneID = sceneID
 	wg.Wait()
-	fmt.Println("returning--")
 	return
 }
 
 func (s *service) generateImage(ctx context.Context, createSceneRequest CreateSceneRequest, sceneID string) (response PyImageResponse, err error) {
 	wg.Add(1)
 	ctx = context.Background()
-	//defer s.processGenerateImage(response, sceneID, err)
+	defer s.processGenerateImage(response, sceneID, err)
 
-	url := fmt.Sprintf("%s/%s", s.pyServerBaseURL, createSceneEndPoint)
+	url := fmt.Sprintf("%s/%s", s.pyServerBaseURL, createImageEndPoint)
 	header := make(map[string]string)
 	header["Content-Type"] = "application/json"
-	//header["request-id"] = sceneID
+	header["request-id"] = sceneID
 	pyImageRequest := PyImageRequest{
 		Prompt: createSceneRequest.Prompt,
 		Count:  createSceneRequest.ImageCount,
@@ -167,10 +175,12 @@ func (s *service) processGenerateImage(response PyImageResponse, sceneID string,
 		}
 
 		awsService := utils.NewAWSService()
+		decodedImage, _ := base64.StdEncoding.DecodeString(image)
 		awsRequest := utils.UploadS3{
-			File:       image,
+			File:       decodedImage,
 			FileType:   "image",
 			FileFormat: response.Data.GeneratedImageFormat,
+			FileName:   imageID,
 		}
 		config := app.InitServiceConfig()
 		bucket := config.GetAWSGeneratedAssetsBucket()
@@ -181,7 +191,7 @@ func (s *service) processGenerateImage(response PyImageResponse, sceneID string,
 		}
 		fmt.Println("link - ", link)
 
-		insertImageStoreRequest := store.InsertImage{
+		insertImageStoreRequest := store.InsertImageRequest{
 			ID:        imageID,
 			ImagePath: link,
 			SceneID:   sceneID,
@@ -194,6 +204,107 @@ func (s *service) processGenerateImage(response PyImageResponse, sceneID string,
 		}
 
 	}
+
+	s.store.UpdateSceneStatus(context.Background(), "image", sceneID, statusImageDone)
+	return
+}
+
+func (s *service) generateAudio(ctx context.Context, createSceneRequest CreateSceneRequest, sceneID string) (response PyAudioResponse, err error) {
+	wg.Add(1)
+	createSceneRequest.Audio = "Test audio 123"
+	ctx = context.Background()
+	//defer s.processGenerateImage(response, sceneID, err)
+	logger.Infow(ctx, "generating audio --- ")
+	url := fmt.Sprintf("%s/%s", s.pyServerBaseURL, createAudioEndPoint)
+	header := make(map[string]string)
+	header["Content-Type"] = "application/json"
+	header["request-id"] = sceneID
+	pyAudioRequest := PyAudioRequest{
+		Prompt:   createSceneRequest.Audio,
+		Language: "en",
+	}
+
+	requestJSON, err := json.Marshal(pyAudioRequest)
+	if err != nil {
+		logger.Errorw(ctx, "error marshalling downstream request", "error", err.Error())
+		return
+	}
+	fmt.Println("body json- ", string(requestJSON))
+
+	httpResponse, err := api.Post(ctx, url, requestJSON, header, s.httpClient)
+	if err != nil {
+		logger.Errorw(ctx, "error while api request create scene", "error", err.Error())
+		return
+	}
+
+	err = json.NewDecoder(httpResponse.Body).Decode(&response)
+	if err != nil {
+		logger.Errorw(ctx, "error while reading py server response body", "error", err.Error())
+		return
+	}
+
+	if len(response.Error) != 0 {
+		logger.Errorw(ctx, "error while generating image from py server", "error", response.Error)
+		err = errors.New("error generating image from py server")
+		return
+	}
+
+	s.processGeneratedAudio(response, sceneID, err)
+
+	return
+}
+
+func (s *service) processGeneratedAudio(response PyAudioResponse, sceneID string, err error) {
+	if err != nil {
+		return
+	}
+	if len(response.Error) != 0 {
+		return
+	}
+	logger.Infow(context.Background(), "processing generated audio - ")
+
+	audioID, err := utils.NewGeneratorUtils().GenerateIDWithPrefix("audio_")
+	if err != nil {
+		logger.Errorw(context.Background(), "error while generating image id", "error", err.Error())
+		return
+	}
+
+	awsService := utils.NewAWSService()
+	decodedAudio, _ := base64.StdEncoding.DecodeString(response.Data)
+	awsRequest := utils.UploadS3{
+		File:       decodedAudio,
+		FileType:   "audio",
+		FileFormat: "mp3",
+		FileName:   audioID,
+	}
+	config := app.InitServiceConfig()
+	bucket := config.GetAWSGeneratedAssetsBucket()
+	link, err := awsService.UploadFile(bucket, awsRequest, true)
+	if err != nil {
+		logger.Errorw(context.Background(), "error while uploading image into aws", "error", err.Error())
+		return
+	}
+	fmt.Println("link - ", link)
+
+	insertAudioRequest := store.InsertAudioRequest{
+		ID:      audioID,
+		SceneID: sceneID,
+	}
+
+	err = s.store.InsertAudio(context.Background(), insertAudioRequest)
+	if err != nil {
+		logger.Errorw(context.Background(), "error while inserting image link", "error", err.Error())
+		return
+	}
+
+	err = s.store.UpdateSceneAudio(context.Background(), audioID, sceneID)
+	if err != nil {
+		logger.Errorw(context.Background(), "error updating audio in scene", "error", err.Error())
+		return
+	}
+
+	s.store.UpdateSceneStatus(context.Background(), "audio", sceneID, statusImageDone)
+
 	return
 }
 
@@ -219,6 +330,39 @@ func (s *service) GetStory(ctx context.Context, storyID string) (storyDetails st
 		logger.Errorw(ctx, "error getting story by story ID", "error", err.Error())
 		return
 	}
+	return
+}
+
+func (s *service) GetScene(ctx context.Context) (response GetSceneResponse, err error) {
+	storyID := ctx.Value("story-id").(string)
+	sceneID := ctx.Value("scene-id").(string)
+
+	dbResponse, err := s.store.GetSceneByID(ctx, sceneID, storyID)
+	if err != nil {
+		logger.Errorw(ctx, "error while getting scene", "error", err.Error())
+		return
+	}
+	if len(dbResponse) == 0 {
+		err = errors.New("invalid id")
+		logger.Errorw(ctx, "no rowns selected")
+		return
+	}
+	for _, resp := range dbResponse {
+		fmt.Println("in for")
+		if resp.Status != "completed" {
+			response.Status = resp.Status
+			fmt.Println("return here - ", resp.Status)
+			return
+		}
+		var imageDetails ImageDetails
+		imageDetails = ImageDetails{
+			ImageID:   resp.ImageID,
+			ImagePath: resp.ImagePath,
+		}
+
+		response.Images = append(response.Images, imageDetails)
+	}
+	response.Status = "completed"
 	return
 }
 
@@ -311,4 +455,15 @@ func (s *service) Publish(ctx context.Context, req []UpdateSceneOrderReq, storyI
 	}
 
 	return link, nil
+
+}
+
+func (s *service) UpdateScene(ctx context.Context, storyID string, sceneID string, selectedImage string) (updatedScene store.Scene, err error) {
+
+	updatedScene, err = s.store.UpdateScene(ctx, storyID, sceneID, selectedImage)
+	if err != nil {
+		logger.Error(ctx, "error updating scene", err.Error())
+		return
+	}
+	return
 }

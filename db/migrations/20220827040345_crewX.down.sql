@@ -17,3 +17,5 @@ DROP TABLE "generated_audio";
 DROP TABLE "image";
 
 DROP TABLE "customer";
+
+alter table scene drop column selected_image varchar(255)

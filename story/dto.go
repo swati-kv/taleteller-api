@@ -7,6 +7,9 @@ type CreateStoryRequest struct {
 	Category    string `json:"category,omitempty"`
 	CustomerID  string `json:"customer_id"`
 }
+type Image struct {
+	SelectedImage string `json:"selected_image"`
+}
 
 type CreateSceneRequest struct {
 	Prompt          string `json:"prompt"`
@@ -17,9 +20,8 @@ type CreateSceneRequest struct {
 }
 
 type CreateSceneResponse struct {
-	Prompt          string `json:"prompt"`
-	Audio           string `json:"audio"`
-	BackgroundMusic string `json:"background_music"`
+	Status  string `json:"status"`
+	SceneID string `json:"scene_id"`
 }
 
 type PyImageRequest struct {
@@ -55,4 +57,23 @@ type PublishRequest struct {
 	Audios      []string `json:"audio,omitempty"`
 	AudioFormat string   `json:"audiofmt"`
 	BGM         []string `json:"bgm,omitempty"`
+}
+type PyAudioRequest struct {
+	Prompt   string `json:"prompt"`
+	Language string `json:"lang"`
+}
+
+type PyAudioResponse struct {
+	Data  string `json:"data"`
+	Error string `json:"error"`
+}
+
+type ImageDetails struct {
+	ImageID   string `json:"image_id"`
+	ImagePath string `json:"image_path"`
+}
+
+type GetSceneResponse struct {
+	Status string         `json:"status"`
+	Images []ImageDetails `json:"images"`
 }

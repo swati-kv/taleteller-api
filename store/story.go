@@ -20,8 +20,9 @@ type Scene struct {
 	ID                  string     `db:"id,omitempty" json:"id,omitempty"`
 	StoryID             string     `db:"story_id,omitempty" json:"story-id,omitempty"`
 	GeneratedAudioID    string     `db:"generated_audio_id,omitempty" json:"generated-audio-id,omitempty"`
-	GeneratedAudioPath  string     `json:"generated-audio-path" db:"path,omitempty"`
+	GeneratedAudioPath  string     `json:"generated-audio-path,omitempty" db:"path,omitempty"`
 	BackgroundAudioPath string     `db:"background_audio_path,omitempty" json:"background-audio-path,omitempty"`
+	SelectedImage       string     `db:"selected_image,omitempty" json:"selected_image"`
 	Status              string     `db:"status,omitempty" json:"status,omitempty"`
 	SceneNumber         int        `db:"scene_number,omitempty" json:"scene-number,omitempty"`
 	SelectedImage       string     `db:"selected_image" json:"selected-image"`
@@ -55,17 +56,34 @@ type CreateSceneRequest struct {
 	SceneNumber int64
 }
 
-type InsertImage struct {
+type InsertImageRequest struct {
 	ID        string
 	ImagePath string
 	SceneID   string
+}
+
+type InsertAudioRequest struct {
+	ID        string
+	AudioPath string
+	SceneID   string
+}
+
+type GetSceneByIDResponse struct {
+	ImageID   string `db:"id"`
+	ImagePath string `db:"path"`
+	Status    string `db:"status"`
 }
 
 type StoryStorer interface {
 	GetStoryByID(ctx context.Context, storyID string) (storyDetails Story, err error)
 	Create(ctx context.Context, createRequest Story) (err error)
 	List(ctx context.Context, status string) (stories []Story, err error)
+	UpdateScene(ctx context.Context, storyID string, sceneID string, selectedImage string) (sceneDetails Scene, err error)
 	CreateScene(ctx context.Context, request CreateSceneRequest) (err error)
-	InsertImage(ctx context.Context, request InsertImage) (err error)
 	UpdateSceneOrder(ctx context.Context, sceneID string, sceneNumber int64, storyID string) (scene Scene, err error)
+	InsertImage(ctx context.Context, request InsertImageRequest) (err error)
+	InsertAudio(ctx context.Context, request InsertAudioRequest) (err error)
+	UpdateSceneAudio(background context.Context, id string, sceneID string) (err error)
+	UpdateSceneStatus(background context.Context, media string, sceneID string, status string) (err error)
+	GetSceneByID(ctx context.Context, id string, id2 string) (response []GetSceneByIDResponse, err error)
 }
