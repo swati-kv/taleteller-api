@@ -8,4 +8,7 @@ const (
 const (
 	statusStarted    = "started"
 	statusProcessing = "processing"
+	statusImageDone  = "image_done"
+	statusAudioDone  = "audio_done"
+	statusCompleted  = "completed"
 )

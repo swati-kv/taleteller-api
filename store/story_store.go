@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"github.com/jmoiron/sqlx"
+	"taleteller/logger"
 	"time"
 )
 
@@ -78,6 +79,58 @@ func (s *storyStore) UpdateSceneAudio(ctx context.Context, id string, sceneID st
 		sceneID,
 		time.Now(),
 	)
+	return
+}
+
+func (s *storyStore) GetSceneStatus(ctx context.Context, sceneID string) (status string, err error) {
+	err = s.db.SelectContext(ctx, &status, getSceneStatusByID, sceneID)
+	return
+
+}
+
+func (s *storyStore) UpdateSceneStatus(ctx context.Context, media string, sceneID string, incomingStatus string) (err error) {
+	currentStatus, err := s.GetSceneStatus(ctx, sceneID)
+	if err != nil {
+		logger.Errorw(ctx, "error getting scene status")
+		return
+	}
+	var realStatus string
+	switch media {
+	case "image":
+		if currentStatus == "audio_done" {
+			realStatus = "completed"
+		} else {
+			realStatus = incomingStatus
+		}
+		_, err = s.db.ExecContext(ctx, updateMediaStatusInScene,
+			realStatus,
+			sceneID,
+			time.Now(),
+		)
+		if err != nil {
+			return
+		}
+	case "audio":
+		if currentStatus == "image_done" {
+			realStatus = "completed"
+		} else {
+			realStatus = incomingStatus
+		}
+		_, err = s.db.ExecContext(ctx, updateMediaStatusInScene,
+			realStatus,
+			sceneID,
+			time.Now(),
+		)
+		if err != nil {
+			return
+		}
+	}
+
+	return
+}
+
+func (s *storyStore) GetSceneByID(ctx context.Context, sceneID string, storyID string) (response []GetSceneByIDResponse, err error) {
+	err = s.db.SelectContext(ctx, &response, getSceneDetailsByID, sceneID, storyID)
 	return
 }
 

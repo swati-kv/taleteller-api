@@ -61,6 +61,12 @@ type InsertAudioRequest struct {
 	SceneID   string
 }
 
+type GetSceneByIDResponse struct {
+	ImageID   string `db:"id"`
+	ImagePath string `db:"path"`
+	Status    string `db:"status"`
+}
+
 type StoryStorer interface {
 	GetStoryByID(ctx context.Context, storyID string) (storyDetails Story, err error)
 	Create(ctx context.Context, createRequest Story) (err error)
@@ -70,4 +76,6 @@ type StoryStorer interface {
 	InsertImage(ctx context.Context, request InsertImageRequest) (err error)
 	InsertAudio(ctx context.Context, request InsertAudioRequest) (err error)
 	UpdateSceneAudio(background context.Context, id string, sceneID string) (err error)
+	UpdateSceneStatus(background context.Context, media string, sceneID string, status string) (err error)
+	GetSceneByID(ctx context.Context, id string, id2 string) (response []GetSceneByIDResponse, err error)
 }
