@@ -59,4 +59,5 @@ type StoryStorer interface {
 	List(ctx context.Context, status string) (stories []Story, err error)
 	CreateScene(ctx context.Context, request CreateSceneRequest) (err error)
 	InsertImage(ctx context.Context, request InsertImage) (err error)
+	UpdateScene(ctx context.Context, sceneID string, sceneNumber int64, storyID string) (err error)
 }

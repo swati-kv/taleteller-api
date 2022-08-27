@@ -2,14 +2,9 @@ package story
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
-	"fmt"
 	"github.com/gojektech/heimdall/v6/httpclient"
 	"github.com/gojektech/heimdall/v6/plugins"
-	"sync"
 	"taleteller/api"
-	"taleteller/app"
 	"taleteller/logger"
 	"taleteller/store"
 	"taleteller/utils"
@@ -17,17 +12,16 @@ import (
 )
 
 type Service interface {
-	Create(ctx context.Context, createRequest CreateStoryRequest) (err error)
-	CreateScene(ctx context.Context, createSceneRequest CreateSceneRequest) (response CreateSceneResponse, err error)
+	Create(ctx context.Context, createRequest CreateStoryRequest) (response CreateStoryResponse, err error)
 	GetStory(ctx context.Context, storyID string) (storyDetails store.Story, err error)
 	List(ctx context.Context, status string) (stories []store.Story, err error)
+	Publish(ctx context.Context, req []UpdateSceneOrderReq, storyID string) (path string, err error)
 }
 
 type service struct {
-	store           store.StoryStorer
-	generatorUtils  utils.IDGeneratorUtils
-	pyServerBaseURL string
-	httpClient      *httpclient.Client
+	httpClient     *httpclient.Client
+	store          store.StoryStorer
+	generatorUtils utils.IDGeneratorUtils
 }
 
 func NewService(store store.StoryStorer, pyServerBaseURL string, generatorUtils utils.IDGeneratorUtils) Service {
@@ -43,7 +37,7 @@ func NewService(store store.StoryStorer, pyServerBaseURL string, generatorUtils 
 	}
 }
 
-func (s *service) Create(ctx context.Context, createRequest CreateStoryRequest) (err error) {
+func (s *service) Create(ctx context.Context, createRequest CreateStoryRequest) (response CreateStoryResponse, err error) {
 
 	storyID, err := s.generatorUtils.GenerateIDWithPrefix("sto_")
 	if err != nil {
@@ -68,6 +62,7 @@ func (s *service) Create(ctx context.Context, createRequest CreateStoryRequest) 
 		logger.Error(ctx, "error creating story", err.Error())
 		return
 	}
+	response.StoryID = storyID
 	return
 }
 
@@ -226,4 +221,27 @@ func (s *service) List(ctx context.Context, status string) (stories []store.Stor
 		return
 	}
 	return
+}
+
+func (s *service) Publish(ctx context.Context, req []UpdateSceneOrderReq, storyID string) (path string, err error) {
+	timeout := 30000 * time.Millisecond
+	client := httpclient.NewClient(httpclient.WithHTTPTimeout(timeout))
+
+	requestLogger := plugins.NewRequestLogger(nil, nil)
+	client.AddPlugin(requestLogger)
+
+	for _, scene := range req {
+		err = s.store.UpdateScene(ctx, scene.SceneID, scene.SceneNumber, storyID)
+		if err != nil {
+			logger.Error(ctx, "error updating scene", err.Error())
+			return
+		}
+	}
+
+	httpResponse, err := api.Post(ctx, url, requestBody, headers, client)
+	if err != nil {
+		logger.Errorw(ctx, "error in publishing", "error", err.Error(), "url", url, "request_body", requestBody, "headers", headers)
+		return
+	}
+	return "test", nil
 }

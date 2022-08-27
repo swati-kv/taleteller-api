@@ -34,3 +34,12 @@ type PyImageResponse struct {
 	} `json:"data"`
 	Error string `json:"error"`
 }
+
+type CreateStoryResponse struct {
+	StoryID string `json:"story_id,omitempty"`
+}
+
+type UpdateSceneOrderReq struct {
+	SceneID     string `json:"scene_id"`
+	SceneNumber int64  `json:"scene_number"`
+}

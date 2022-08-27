@@ -6,18 +6,14 @@ import (
 )
 
 type serviceConfig struct {
-	Sample                   string
-	Environment              string
-	pyServerBaseURL          string
-	awsRegion                string
-	awsAccessKeyID           string
-	awsSecretAccessKey       string
-	awsGeneratedAssetsBucket string
-	user        string
-	password    string
-	localhost   string
-	port        int
-	dbName      string
+	Sample        string
+	Environment   string
+	user          string
+	password      string
+	localhost     string
+	port          int
+	dbName        string
+	publishBucket string
 }
 
 func InitServiceConfig() serviceConfig {
