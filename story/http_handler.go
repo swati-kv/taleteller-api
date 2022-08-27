@@ -30,7 +30,7 @@ func HandleStoryCreate(service Service) http.HandlerFunc {
 	})
 }
 
-func HandleCreateScene() http.HandlerFunc {
+func HandleCreateScene(service Service) http.HandlerFunc {
 	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		ctx := req.Context()
 		vars := mux.Vars(req)
@@ -58,15 +58,25 @@ func HandleCreateScene() http.HandlerFunc {
 		err = json.Unmarshal(reqByte, &createSceneRequest)
 		if err != nil {
 			logger.Errorw(ctx, "error while reading request body", "error", err.Error())
-			api.RespondWithError(rw, http.StatusBadRequest, api.Response{
+			api.RespondWithError(rw, http.StatusInternalServerError, api.Response{
 				Error:     "error unmarshalling request",
 				ErrorCode: "INTERNAL_SERVER_ERROR",
 			})
 			return
 		}
 
+		response, err := service.CreateScene(ctx, createSceneRequest)
+		if err != nil {
+			logger.Errorw(ctx, "error generating scene", "error", err.Error())
+			api.RespondWithError(rw, http.StatusInternalServerError, api.Response{
+				Error:     "error generating scene",
+				ErrorCode: "INTERNAL_SERVER_ERROR",
+			})
+			return
+		}
+
 		api.RespondWithJSON(rw, http.StatusOK, api.Response{
-			Data: createSceneRequest,
+			Data: response,
 		})
 	})
 }

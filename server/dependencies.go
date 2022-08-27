@@ -1,6 +1,7 @@
 package server
 
 import (
+	"taleteller/app"
 	"taleteller/db"
 	"taleteller/store"
 	"taleteller/story"
@@ -13,11 +14,12 @@ type Dependencies struct {
 
 func NewDependencies() (dependencies Dependencies, err error) {
 	appDB := db.Get()
+	serviceConfig := app.InitServiceConfig()
 
 	storyStore := store.NewStoryStore(appDB)
 	generatorUtils := utils.NewGeneratorUtils()
 
-	storyService := story.NewService(storyStore, generatorUtils)
+	storyService := story.NewService(storyStore, serviceConfig.GetPythonServerBaseURL(), generatorUtils)
 
 	dependencies = Dependencies{StoryService: storyService}
 	return

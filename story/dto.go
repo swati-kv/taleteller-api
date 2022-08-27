@@ -13,3 +13,9 @@ type CreateSceneRequest struct {
 	Audio           string `json:"audio"`
 	BackgroundMusic string `json:"background_music"`
 }
+
+type CreateSceneResponse struct {
+	Prompt          string `json:"prompt"`
+	Audio           string `json:"audio"`
+	BackgroundMusic string `json:"background_music"`
+}
