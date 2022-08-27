@@ -10,7 +10,12 @@ type storyStore struct {
 	db *sqlx.DB
 }
 
-func (s storyStore) Create(ctx context.Context, c CreateStoryRequest) (err error) {
+func (s storyStore) List(ctx context.Context) (stories []Story, err error) {
+	err = s.db.SelectContext(ctx, &stories, getStories)
+	return
+}
+
+func (s storyStore) Create(ctx context.Context, c Story) (err error) {
 	//TODO implement me
 	_, err = s.db.ExecContext(ctx, createStory,
 		c.StoryID,
