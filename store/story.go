@@ -49,10 +49,11 @@ type Story struct {
 }
 
 type CreateSceneRequest struct {
-	SceneID     string
-	Status      string
-	StoryID     string
-	SceneNumber int64
+	SceneID         string
+	Status          string
+	StoryID         string
+	SceneNumber     int64
+	BackgroundMusic string
 }
 
 type InsertImageRequest struct {

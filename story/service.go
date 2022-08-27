@@ -98,11 +98,11 @@ func (s *service) CreateScene(ctx context.Context, createSceneRequest CreateScen
 	}
 
 	//TODO handle defer
-
+	//wg.Add(1)
 	go func() {
 		s.generateImage(ctx, createSceneRequest, sceneID)
 		s.generateAudio(ctx, createSceneRequest, sceneID)
-		wg.Done()
+		//wg.Done()
 	}()
 
 	response.Status = statusProcessing
@@ -112,7 +112,6 @@ func (s *service) CreateScene(ctx context.Context, createSceneRequest CreateScen
 }
 
 func (s *service) generateImage(ctx context.Context, createSceneRequest CreateSceneRequest, sceneID string) (response PyImageResponse, err error) {
-	wg.Add(1)
 	ctx = context.Background()
 	defer s.processGenerateImage(response, sceneID, err)
 
@@ -174,10 +173,11 @@ func (s *service) processGenerateImage(response PyImageResponse, sceneID string,
 
 		awsService := utils.NewAWSService()
 		decodedImage, _ := base64.StdEncoding.DecodeString(image)
+
 		awsRequest := utils.UploadS3{
 			File:       decodedImage,
 			FileType:   "image",
-			FileFormat: response.Data.GeneratedImageFormat,
+			FileFormat: "jpeg",
 			FileName:   imageID,
 		}
 		config := app.InitServiceConfig()
@@ -208,7 +208,7 @@ func (s *service) processGenerateImage(response PyImageResponse, sceneID string,
 }
 
 func (s *service) generateAudio(ctx context.Context, createSceneRequest CreateSceneRequest, sceneID string) (response PyAudioResponse, err error) {
-	wg.Add(1)
+	//wg.Add(1)
 	//createSceneRequest.Audio = "Test audio 123"
 	ctx = context.Background()
 	//defer s.processGenerateImage(response, sceneID, err)
@@ -309,10 +309,11 @@ func (s *service) processGeneratedAudio(response PyAudioResponse, sceneID string
 
 func (s *service) createSceneEntry(id string, request CreateSceneRequest, storyID string) (err error) {
 	storeRequest := store.CreateSceneRequest{
-		SceneID:     id,
-		Status:      statusStarted,
-		StoryID:     storyID,
-		SceneNumber: request.SceneNumber,
+		SceneID:         id,
+		Status:          statusStarted,
+		StoryID:         storyID,
+		SceneNumber:     request.SceneNumber,
+		BackgroundMusic: request.BackgroundMusic,
 	}
 
 	err = s.store.CreateScene(context.Background(), storeRequest)

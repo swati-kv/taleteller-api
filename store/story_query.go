@@ -6,8 +6,8 @@ const (
 VALUES($1, $2, $3, $4, $5, $6, $7, $8,$9);`
 
 	createScene = `INSERT INTO public.scene
-(id, story_id, status, scene_number, created_at, updated_at)
-VALUES($1, $2, $3, $4, $5, $6);
+(id, story_id, status, scene_number, background_audio_path ,created_at, updated_at)
+VALUES($1, $2, $3, $4, $5, $6, $7);
 `
 
 	insertImage = `INSERT INTO public.image

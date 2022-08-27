@@ -57,6 +57,7 @@ func (s storyStore) CreateScene(ctx context.Context, request CreateSceneRequest)
 		request.StoryID,
 		request.Status,
 		request.SceneNumber,
+		request.BackgroundMusic,
 		time.Now(),
 		time.Now(),
 	)
