@@ -7,3 +7,6 @@ type CreateStoryRequest struct {
 	Category    string `json:"category,omitempty"`
 	CustomerID  string `json:"customer_id"`
 }
+type Image struct {
+	SelectedImage string `json:"selected_image"`
+}
