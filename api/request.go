@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"github.com/gojektech/heimdall/v6/httpclient"
 	"net/http"
 	"time"
 
