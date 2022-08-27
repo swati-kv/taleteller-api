@@ -2,6 +2,7 @@ package story
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -164,8 +165,9 @@ func (s *service) processGenerateImage(response PyImageResponse, sceneID string,
 		}
 
 		awsService := utils.NewAWSService()
+		decodedImage, _ := base64.StdEncoding.DecodeString(image)
 		awsRequest := utils.UploadS3{
-			File:       image,
+			File:       decodedImage,
 			FileType:   "image",
 			FileFormat: response.Data.GeneratedImageFormat,
 		}

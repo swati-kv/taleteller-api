@@ -1,7 +1,7 @@
 package utils
 
 type UploadS3 struct {
-	File       string
+	File       []byte
 	FileType   string
 	FileFormat string
 }
