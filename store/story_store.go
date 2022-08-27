@@ -30,7 +30,6 @@ func (s storyStore) List(ctx context.Context, status string) (stories []Story, e
 }
 
 func (s storyStore) Create(ctx context.Context, c Story) (err error) {
-	//TODO implement me
 	_, err = s.db.ExecContext(ctx, createStory,
 		c.StoryID,
 		c.Name,

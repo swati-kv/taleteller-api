@@ -1,0 +1,1 @@
+alter table scene add column selected_image varchar(255);

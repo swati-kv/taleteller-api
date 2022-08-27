@@ -22,6 +22,7 @@ VALUES($1, $2, $3, $4, $5, $6);
 FROM story WHERE status = $1`
 
 	updateScene = `UPDATE public.scene SET selected_image = $1 where story_id = $2 and id = $3 RETURNING *`
+
 	insertAudio = `INSERT INTO public.generated_audio
 (id, "path", created_at, updated_at)
 VALUES($1, $2, $3, $4);

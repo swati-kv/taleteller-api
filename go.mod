@@ -6,7 +6,7 @@ require (
 	github.com/aws/aws-sdk-go v1.44.86
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/gojektech/heimdall/v6 v6.1.0
-	github.com/google/uuid v1.3.0
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/jmoiron/sqlx v1.3.4
