@@ -1,4 +1,4 @@
-ALTER TABLE "sscene" DROP CONSTRAINT "scene_story_id";
+ALTER TABLE "scene" DROP CONSTRAINT "scene_story_id";
 
 ALTER TABLE "story" DROP CONSTRAINT "story_customer_id";
 
