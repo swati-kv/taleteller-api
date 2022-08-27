@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	"taleteller/logger"
 	"time"
 )
 
@@ -97,41 +96,49 @@ func (s *storyStore) GetSceneStatus(ctx context.Context, sceneID string) (status
 }
 
 func (s *storyStore) UpdateSceneStatus(ctx context.Context, media string, sceneID string, incomingStatus string) (err error) {
-	currentStatus, err := s.GetSceneStatus(ctx, sceneID)
+	//currentStatus, err := s.GetSceneStatus(ctx, sceneID)
+	//if err != nil {
+	//	logger.Errorw(ctx, "error getting scene status")
+	//	return
+	//}
+	//var realStatus string
+	//switch media {
+	//case "image":
+	//	if currentStatus == "audio_done" {
+	//		realStatus = "completed"
+	//	} else {
+	//		realStatus = incomingStatus
+	//	}
+	//	_, err = s.db.ExecContext(ctx, updateMediaStatusInScene,
+	//		realStatus,
+	//		sceneID,
+	//		time.Now(),
+	//	)
+	//	if err != nil {
+	//		return
+	//	}
+	//case "audio":
+	//	if currentStatus == "image_done" {
+	//		realStatus = "completed"
+	//	} else {
+	//		realStatus = incomingStatus
+	//	}
+	//	_, err = s.db.ExecContext(ctx, updateMediaStatusInScene,
+	//		realStatus,
+	//		sceneID,
+	//		time.Now(),
+	//	)
+	//	if err != nil {
+	//		return
+	//	}
+	//}
+	_, err = s.db.ExecContext(ctx, updateMediaStatusInScene,
+		"completed",
+		sceneID,
+		time.Now(),
+	)
 	if err != nil {
-		logger.Errorw(ctx, "error getting scene status")
 		return
-	}
-	var realStatus string
-	switch media {
-	case "image":
-		if currentStatus == "audio_done" {
-			realStatus = "completed"
-		} else {
-			realStatus = incomingStatus
-		}
-		_, err = s.db.ExecContext(ctx, updateMediaStatusInScene,
-			realStatus,
-			sceneID,
-			time.Now(),
-		)
-		if err != nil {
-			return
-		}
-	case "audio":
-		if currentStatus == "image_done" {
-			realStatus = "completed"
-		} else {
-			realStatus = incomingStatus
-		}
-		_, err = s.db.ExecContext(ctx, updateMediaStatusInScene,
-			realStatus,
-			sceneID,
-			time.Now(),
-		)
-		if err != nil {
-			return
-		}
 	}
 
 	return

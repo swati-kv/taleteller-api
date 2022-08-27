@@ -101,13 +101,10 @@ func (s *service) CreateScene(ctx context.Context, createSceneRequest CreateScen
 
 	go func() {
 		s.generateImage(ctx, createSceneRequest, sceneID)
-		wg.Done()
-	}()
-
-	go func() {
 		s.generateAudio(ctx, createSceneRequest, sceneID)
 		wg.Done()
 	}()
+
 	response.Status = statusProcessing
 	response.SceneID = sceneID
 	wg.Wait()
@@ -206,7 +203,7 @@ func (s *service) processGenerateImage(response PyImageResponse, sceneID string,
 
 	}
 
-	s.store.UpdateSceneStatus(context.Background(), "image", sceneID, statusImageDone)
+	//s.store.UpdateSceneStatus(context.Background(), "image", sceneID, statusImageDone)
 	return
 }
 
@@ -305,7 +302,7 @@ func (s *service) processGeneratedAudio(response PyAudioResponse, sceneID string
 		return
 	}
 
-	s.store.UpdateSceneStatus(context.Background(), "audio", sceneID, statusImageDone)
+	s.store.UpdateSceneStatus(context.Background(), "audio", sceneID, "completed")
 
 	return
 }
@@ -341,12 +338,12 @@ func (s *service) GetScene(ctx context.Context) (response GetSceneResponse, err 
 
 	dbResponse, err := s.store.GetSceneByID(ctx, sceneID, storyID)
 	if err != nil {
-		logger.Errorw(ctx, "error while getting scene", "error", err.Error())
+		logger.Errorw(ctx, "error while getting scene", "error", err.Error(), "sceneID", sceneID, "storyID", storyID)
 		return
 	}
 	if len(dbResponse) == 0 {
-		err = errors.New("invalid id")
-		logger.Errorw(ctx, "no rowns selected", "sceneID", sceneID, "storyID", storyID)
+		response.Status = "processing"
+		logger.Warnw(ctx, "no rowns selected", "sceneID", sceneID, "storyID", storyID)
 		return
 	}
 	for _, resp := range dbResponse {
