@@ -11,6 +11,7 @@ import (
 type Service interface {
 	Create(ctx context.Context, createRequest CreateStoryRequest) (err error)
 	GetStoryStatus(ctx context.Context, storyID string) (status string, err error)
+	List(ctx context.Context) (stories []store.Story, err error)
 }
 
 type service struct {
@@ -33,7 +34,7 @@ func (s *service) Create(ctx context.Context, createRequest CreateStoryRequest) 
 		return
 	}
 
-	req := store.CreateStoryRequest{
+	req := store.Story{
 		StoryID:     storyID,
 		Name:        createRequest.Name,
 		Description: createRequest.Description,
@@ -61,4 +62,14 @@ func (s *service) GetStoryStatus(ctx context.Context, storyID string) (status st
 	}
 	status = config.Status
 	return
+}
+
+
+func (s *service) List(ctx context.Context) (stories []store.Story, err error) {
+   stories, err = s.store.List(ctx)
+   if err != nil {
+      logger.Error(ctx, "error creating story", err.Error())
+      return
+   }
+   return
 }
