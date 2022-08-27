@@ -78,7 +78,7 @@ func initDB() (err error) {
 	user := "postgres"
 	password := "postgres"
 	host := "localhost"
-	port := 5432
+	port := 5433
 	dbName := "crewX"
 	err = db.Init(&db.Config{
 		Driver:       "postgres",

@@ -1,7 +1,7 @@
 # App
 ENVIRONMENT: "development"
 SAMPLE: "merchant.local"
-APP_NAME: "service"
+APP_NAME: "scene"
 APP_PORT: 8001
 
 
@@ -12,7 +12,7 @@ LOG_SOURCE_LOCATION_ENABLE: false
 
 # Database
 DB_HOST: "localhost"
-DB_PORT: 5432
+DB_PORT: 5433
 DB_NAME: "dpay"
 DB_USER: "postgres"
 DB_PASSWORD: "postgres"
@@ -87,7 +87,7 @@ OY_BASE_URL: ""
 
 # Replica Database
 REPLICA_DB_HOST: postgres_postgres
-REPLICA_DB_PORT: 5432
+REPLICA_DB_PORT: 5433
 REPLICA_DB_NAME: staging_dpay_server
 REPLICA_DB_USER: postgres
 REPLICA_DB_PASSWORD: postgres
