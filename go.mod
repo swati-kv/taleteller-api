@@ -3,13 +3,16 @@ module taleteller
 go 1.14
 
 require (
+	github.com/aws/aws-sdk-go v1.44.86
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/gojektech/heimdall/v6 v6.1.0
+	github.com/google/uuid v1.3.0
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/lib/pq v1.10.4
+	github.com/matoous/go-nanoid v1.5.0
 	github.com/prometheus/client_golang v1.12.1 // indirect
 	github.com/slok/go-http-metrics v0.10.0
 	github.com/spf13/afero v1.8.1 // indirect

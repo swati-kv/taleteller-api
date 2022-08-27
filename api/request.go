@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"taleteller/logger"
 	"github.com/gojektech/heimdall/v6/httpclient"
+	"taleteller/logger"
 )
 
 func Post(

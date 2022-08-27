@@ -1,6 +1,7 @@
 package story
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"io/ioutil"
@@ -43,6 +44,7 @@ func HandleCreateScene(service Service) http.HandlerFunc {
 			})
 			return
 		}
+		ctx = context.WithValue(ctx, "story-id", id)
 
 		reqByte, err := ioutil.ReadAll(req.Body)
 		if err != nil {
