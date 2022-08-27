@@ -7,3 +7,30 @@ type CreateStoryRequest struct {
 	Category    string `json:"category,omitempty"`
 	CustomerID  string `json:"customer_id"`
 }
+
+type CreateSceneRequest struct {
+	Prompt          string `json:"prompt"`
+	Audio           string `json:"audio"`
+	BackgroundMusic string `json:"background_music"`
+	ImageCount      int64  `json:"image_count"`
+	SceneNumber     int64  `json:"scene_number"`
+}
+
+type CreateSceneResponse struct {
+	Prompt          string `json:"prompt"`
+	Audio           string `json:"audio"`
+	BackgroundMusic string `json:"background_music"`
+}
+
+type PyImageRequest struct {
+	Prompt string `json:"prompt"`
+	Count  int64  `json:"num"`
+}
+
+type PyImageResponse struct {
+	Data struct {
+		GeneratedImage       []string `json:"generatedImgs"`
+		GeneratedImageFormat string   `json:"generatedImgsFormat"`
+	} `json:"data"`
+	Error string `json:"error"`
+}

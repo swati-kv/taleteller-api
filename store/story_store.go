@@ -10,6 +10,18 @@ type storyStore struct {
 	db *sqlx.DB
 }
 
+func (s storyStore) InsertImage(ctx context.Context, request InsertImage) (err error) {
+	_, err = s.db.ExecContext(ctx, insertImage,
+		request.ID,
+		request.ImagePath,
+		request.SceneID,
+		false,
+		time.Now(),
+		time.Now(),
+	)
+	return
+}
+
 func (s storyStore) List(ctx context.Context, status string) (stories []Story, err error) {
 	err = s.db.SelectContext(ctx, &stories, getStories, status)
 	return
@@ -34,6 +46,19 @@ func (s storyStore) GetStoryByID(ctx context.Context, storyID string) (storyResp
 	err = s.db.SelectContext(ctx, &storyResponse.SceneDetails, getSceneByID, storyID)
 	return
 }
+func (s storyStore) CreateScene(ctx context.Context, request CreateSceneRequest) (err error) {
+	//TODO implement me
+	_, err = s.db.ExecContext(ctx, createScene,
+		request.SceneID,
+		request.StoryID,
+		request.Status,
+		request.SceneNumber,
+		time.Now(),
+		time.Now(),
+	)
+	return
+}
+
 func NewStoryStore(db *sqlx.DB) *storyStore {
 	return &storyStore{
 		db: db,

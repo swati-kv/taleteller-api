@@ -4,7 +4,17 @@ import (
 	"context"
 	"time"
 )
-
+type CreateStoryRequest struct {
+	StoryID     string    `db:"id"`
+	Name        string    `db:"name"`
+	Description string    `db:"description"`
+	Mood        string    `db:"mood"`
+	Category    string    `db:"category"`
+	CustomerID  string    `db:"customer_id"`
+	Status      string    `db:"status"`
+	CreatedAt   time.Time `db:"created_at"`
+	UpdatedAt   time.Time `db:"updated_at"`
+}
 type Scene struct {
 	ID                  string     `db:"id,omitempty" json:"id,omitempty"`
 	StoryID             string     `db:"story_id,omitempty" json:"story-id,omitempty"`
@@ -30,8 +40,23 @@ type Story struct {
 	SceneDetails []Scene   `json:"scene-details,omitempty"`
 }
 
+type CreateSceneRequest struct {
+	SceneID     string
+	Status      string
+	StoryID     string
+	SceneNumber int64
+}
+
+type InsertImage struct {
+	ID        string
+	ImagePath string
+	SceneID   string
+}
+
 type StoryStorer interface {
 	GetStoryByID(ctx context.Context, storyID string) (storyDetails Story, err error)
 	Create(ctx context.Context, createRequest Story) (err error)
 	List(ctx context.Context, status string) (stories []Story, err error)
+	CreateScene(ctx context.Context, request CreateSceneRequest) (err error)
+	InsertImage(ctx context.Context, request InsertImage) (err error)
 }

@@ -6,8 +6,13 @@ import (
 )
 
 type serviceConfig struct {
-	Sample      string
-	Environment string
+	Sample                   string
+	Environment              string
+	pyServerBaseURL          string
+	awsRegion                string
+	awsAccessKeyID           string
+	awsSecretAccessKey       string
+	awsGeneratedAssetsBucket string
 	user        string
 	password    string
 	localhost   string
@@ -17,17 +22,35 @@ type serviceConfig struct {
 
 func InitServiceConfig() serviceConfig {
 	return serviceConfig{
-		Sample:      ReadEnvString("SAMPLE"),
-		Environment: ReadEnvString("ENVIRONMENT"),
+		Sample:                   ReadEnvString("SAMPLE"),
+		Environment:              ReadEnvString("ENVIRONMENT"),
 		user:        ReadEnvString("DB_USER"),
 		password:    ReadEnvString("DB_PASSWORD"),
 		localhost:   ReadEnvString("DB_HOST"),
 		port:        ReadEnvInt("DB_PORT"),
 		dbName:      ReadEnvString("DB_NAME"),
+		pyServerBaseURL:          ReadEnvString("PYTHON_SERVER_BASE_URL"),
+		awsRegion:                ReadEnvString("AWS_REGION"),
+		awsAccessKeyID:           ReadEnvString("AWS_ACCESS_KEY_ID"),
+		awsSecretAccessKey:       ReadEnvString("AWS_SECRET_ACCESS_KEY"),
+		awsGeneratedAssetsBucket: ReadEnvString("AWS_GENERATED_ASSETS_BUCKET"),
 	}
 }
 
-type ServiceConfig interface {
+func (s *serviceConfig) GetAWSRegion() string {
+	return s.awsRegion
+}
+
+func (s *serviceConfig) GetAWSAccessKeyID() string {
+	return s.awsAccessKeyID
+}
+
+func (s *serviceConfig) GetAWSGeneratedAssetsBucket() string {
+	return s.awsGeneratedAssetsBucket
+}
+
+func (s *serviceConfig) GetAWSSecretKey() string {
+	return s.awsSecretAccessKey
 }
 
 func (s *serviceConfig) GetSample() string {
@@ -37,6 +60,11 @@ func (s *serviceConfig) GetSample() string {
 func (s *serviceConfig) GetEnv() string {
 	return s.Environment
 }
+
+func (s *serviceConfig) GetPythonServerBaseURL() string {
+	return s.pyServerBaseURL
+}
+
 
 func (s *serviceConfig) GetUser() string {
 	return s.user
