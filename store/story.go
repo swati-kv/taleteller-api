@@ -10,7 +10,7 @@ type Scene struct {
 	StoryID             string     `db:"story_id,omitempty" json:"story-id,omitempty"`
 	GeneratedAudioID    string     `db:"generated_audio_id,omitempty" json:"generated-audio-id,omitempty"`
 	GeneratedAudioPath  string     `json:"generated-audio-path" db:"path,omitempty"`
-	BackgroundAudioPath *string    `db:"background_audio_path,omitempty" json:"background-audio-path,omitempty"`
+	BackgroundAudioPath string     `db:"background_audio_path,omitempty" json:"background-audio-path,omitempty"`
 	Status              string     `db:"status,omitempty" json:"status,omitempty"`
 	SceneNumber         int        `db:"scene_number,omitempty" json:"scene-number,omitempty"`
 	CreatedAt           *time.Time `db:"created_at" json:"created-at,omitempty"`
