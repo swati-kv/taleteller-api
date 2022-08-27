@@ -1,4 +1,4 @@
-module
+module taleteller
 
 go 1.14
 
