@@ -61,3 +61,6 @@ ALTER TABLE "story" ADD CONSTRAINT "story_customer_id" FOREIGN KEY ("customer_id
 ALTER TABLE "scene" ADD CONSTRAINT "scene_background_audio_id" FOREIGN KEY ("background_audio_id") REFERENCES "background_audio" ("id");
 
 ALTER TABLE "scene" ADD CONSTRAINT "scene_generated_audio_id" FOREIGN KEY ("generated_audio_id") REFERENCES "generated_audio" ("id");
+
+alter table scene add column selected_image int
+
