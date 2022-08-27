@@ -1,7 +1,8 @@
 CREATE TABLE "story" (
     "id" varchar(255) PRIMARY KEY,
-    "scene_id" varchar(255),
     "name" varchar(255),
+    "mood" varchar(255),
+    "category" varchar(255),
     "description" varchar(255),
     "customer_id" varchar(255),
     "status" varchar(255),
@@ -11,6 +12,7 @@ CREATE TABLE "story" (
 
 CREATE TABLE "scene" (
     "id" varchar(255) PRIMARY KEY,
+    "story_id" varchar(255),
     "generated_audio_id" varchar(255),
     "background_audio_id" varchar(255),
     "status" varchar(255),
@@ -52,7 +54,7 @@ CREATE TABLE "customer" (
   "updated_at" timestamp
 );
 
-ALTER TABLE "story" ADD CONSTRAINT "story_scene_id" FOREIGN KEY ("scene_id") REFERENCES "scene" ("id");
+ALTER TABLE "scene" ADD CONSTRAINT "scene_story_id" FOREIGN KEY ("story_id") REFERENCES "story" ("id");
 
 ALTER TABLE "story" ADD CONSTRAINT "story_customer_id" FOREIGN KEY ("customer_id") REFERENCES "customer" ("id");
 
