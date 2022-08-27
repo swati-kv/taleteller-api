@@ -75,11 +75,12 @@ func Load(filePath string, fileName string) (err error) {
 }
 
 func initDB() (err error) {
-	user := "postgres"
-	password := "postgres"
-	host := "localhost"
-	port := 5433
-	dbName := "crewX"
+	serviceConfig := InitServiceConfig()
+	user := serviceConfig.GetUser()
+	password := serviceConfig.GetPassword()
+	host := serviceConfig.GetHost()
+	port := serviceConfig.GetPort()
+	dbName := serviceConfig.GetDbName()
 	err = db.Init(&db.Config{
 		Driver:       "postgres",
 		URL:          ConnectionURL(user, password, host, port, dbName),

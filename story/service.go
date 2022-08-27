@@ -19,6 +19,8 @@ import (
 type Service interface {
 	Create(ctx context.Context, createRequest CreateStoryRequest) (err error)
 	CreateScene(ctx context.Context, createSceneRequest CreateSceneRequest) (response CreateSceneResponse, err error)
+	GetStory(ctx context.Context, storyID string) (storyDetails store.Story, err error)
+	List(ctx context.Context, status string) (stories []store.Story, err error)
 }
 
 type service struct {
@@ -49,7 +51,7 @@ func (s *service) Create(ctx context.Context, createRequest CreateStoryRequest) 
 		return
 	}
 
-	req := store.CreateStoryRequest{
+	req := store.Story{
 		StoryID:     storyID,
 		Name:        createRequest.Name,
 		Description: createRequest.Description,
@@ -203,6 +205,24 @@ func (s *service) createSceneEntry(id string, request CreateSceneRequest, storyI
 	err = s.store.CreateScene(context.Background(), storeRequest)
 	if err != nil {
 		logger.Errorw(context.Background(), "error while inserting new story into db", "error", err.Error())
+		return
+	}
+	return
+}
+
+func (s *service) GetStory(ctx context.Context, storyID string) (storyDetails store.Story, err error) {
+	storyDetails, err = s.store.GetStoryByID(ctx, storyID)
+	if err != nil {
+		logger.Errorw(ctx, "error getting story by story ID", "error", err.Error())
+		return
+	}
+	return
+}
+
+func (s *service) List(ctx context.Context, status string) (stories []store.Story, err error) {
+	stories, err = s.store.List(ctx, status)
+	if err != nil {
+		logger.Error(ctx, "error getting stories", err.Error())
 		return
 	}
 	return
