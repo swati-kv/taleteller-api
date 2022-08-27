@@ -13,6 +13,8 @@ func initRouter(dependencies Dependencies) (router *mux.Router) {
 
 	router.Handle("/sample", scene.HandlerSample()).Methods(http.MethodGet)
 
+	router.Handle("/stories", story.HandleStoryCreate(dependencies.StoryService)).Methods(http.MethodPost)
+
 	router.Handle("/story/{id}/scene", story.HandleCreateScene(dependencies.StoryService)).Methods(http.MethodPost)
 
 	router.Handle("/stories/{id}",
