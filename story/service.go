@@ -115,7 +115,7 @@ func (s *service) generateImage(ctx context.Context, createSceneRequest CreateSc
 	ctx = context.Background()
 	defer s.processGenerateImage(response, sceneID, err)
 
-	url := fmt.Sprintf("%s/%s", s.pyServerBaseURL, createImageEndPoint)
+	url := fmt.Sprintf("%s/%s", s.pyServerBaseURL, createImageCraiyonEndPoint)
 	header := make(map[string]string)
 	header["Content-Type"] = "application/json"
 	header["request-id"] = sceneID
@@ -209,7 +209,7 @@ func (s *service) processGenerateImage(response PyImageResponse, sceneID string,
 
 func (s *service) generateAudio(ctx context.Context, createSceneRequest CreateSceneRequest, sceneID string) (response PyAudioResponse, err error) {
 	wg.Add(1)
-	createSceneRequest.Audio = "Test audio 123"
+	//createSceneRequest.Audio = "Test audio 123"
 	ctx = context.Background()
 	//defer s.processGenerateImage(response, sceneID, err)
 	logger.Infow(ctx, "generating audio --- ")
@@ -285,8 +285,9 @@ func (s *service) processGeneratedAudio(response PyAudioResponse, sceneID string
 	fmt.Println("link - ", link)
 
 	insertAudioRequest := store.InsertAudioRequest{
-		ID:      audioID,
-		SceneID: sceneID,
+		ID:        audioID,
+		SceneID:   sceneID,
+		AudioPath: link,
 	}
 
 	err = s.store.InsertAudio(context.Background(), insertAudioRequest)
@@ -300,8 +301,8 @@ func (s *service) processGeneratedAudio(response PyAudioResponse, sceneID string
 		logger.Errorw(context.Background(), "error updating audio in scene", "error", err.Error())
 		return
 	}
-
-	s.store.UpdateSceneStatus(context.Background(), "audio", sceneID, statusImageDone)
+	time.Sleep(1 * time.Second)
+	s.store.UpdateSceneStatus(context.Background(), "audio", sceneID, statusAudioDone)
 
 	return
 }
@@ -342,7 +343,7 @@ func (s *service) GetScene(ctx context.Context) (response GetSceneResponse, err 
 	}
 	if len(dbResponse) == 0 {
 		err = errors.New("invalid id")
-		logger.Errorw(ctx, "no rowns selected")
+		logger.Errorw(ctx, "no rowns selected", "sceneID", sceneID, "storyID", storyID)
 		return
 	}
 	for _, resp := range dbResponse {

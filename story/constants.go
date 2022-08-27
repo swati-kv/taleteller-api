@@ -1,8 +1,9 @@
 package story
 
 const (
-	createImageEndPoint = "dalle"
-	createAudioEndPoint = "v2/tts/b64"
+	createImageDalleEndPoint   = "dalle"
+	createAudioEndPoint        = "v2/tts/b64"
+	createImageCraiyonEndPoint = "craiyon"
 )
 
 const (

@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"fmt"
 	"github.com/jmoiron/sqlx"
 	"taleteller/logger"
 	"time"
@@ -49,7 +50,8 @@ func (s storyStore) GetStoryByID(ctx context.Context, storyID string) (storyResp
 }
 func (s storyStore) UpdateScene(ctx context.Context, storyID string, sceneID string, selectedImage string) (scene Scene, err error) {
 	err = s.db.GetContext(ctx, &scene, updateScene, selectedImage, storyID, sceneID)
-	return}
+	return
+}
 func (s storyStore) CreateScene(ctx context.Context, request CreateSceneRequest) (err error) {
 	//TODO implement me
 	_, err = s.db.ExecContext(ctx, createScene,
@@ -83,7 +85,14 @@ func (s *storyStore) UpdateSceneAudio(ctx context.Context, id string, sceneID st
 }
 
 func (s *storyStore) GetSceneStatus(ctx context.Context, sceneID string) (status string, err error) {
-	err = s.db.SelectContext(ctx, &status, getSceneStatusByID, sceneID)
+	var x []string
+	err = s.db.SelectContext(ctx, &x, getSceneStatusByID, sceneID)
+	if err != nil {
+		fmt.Println("=-------------------- ", sceneID, err.Error())
+	}
+	if len(x) > 0 {
+		status = x[0]
+	}
 	return
 
 }

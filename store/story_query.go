@@ -34,7 +34,7 @@ WHERE id=$2;
 SET status=$1, updated_at=$3
 WHERE id=$2;
 `
-	getSceneStatusByID = `SELECT status from public.scene where id = $1`
+	getSceneStatusByID = `SELECT status from public.scene where id = $1 limit 1`
 
 	getSceneDetailsByID = `select i.id, path, status from image i inner join scene s  on i.scene_id = s.id where s.story_id = $2 and s.id = $1;`
 )
