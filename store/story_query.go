@@ -21,7 +21,7 @@ VALUES($1, $2, $3, $4, $5, $6);
 	getStories = `SELECT id, "name", mood, category, description, customer_id, status, created_at, updated_at
 FROM story WHERE status = $1`
 
-	updateScene = `UPDATE public.scene SET selected_image = $1 where story_id = $2 and id = $3 RETURNING *`
+	updateScene = `UPDATE public.scene SET selected_image = $1 where id = $2 RETURNING id`
 
 	insertAudio = `INSERT INTO public.generated_audio
 (id, "path", created_at, updated_at)

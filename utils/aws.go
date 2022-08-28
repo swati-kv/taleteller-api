@@ -82,7 +82,8 @@ func (s *service) UploadFileV2(bucket string, request UploadS3, isPublic bool) (
 		//	conEnc = &cType
 	}
 	fmt.Println("contentTypecontentType", *contentType, cType)
-	fmt.Println("request.File", request.File)
+	//fmt.Println("request.File", request.File)
+	fmt.Println("key --------++++", len(key))
 	inputRequest := &s3manager.UploadInput{
 		Bucket:      &bucket,
 		Key:         &key,
@@ -98,6 +99,7 @@ func (s *service) UploadFileV2(bucket string, request UploadS3, isPublic bool) (
 	// Upload the file to S3.
 	result, err := uploader.Upload(inputRequest)
 	if err != nil {
+		fmt.Println("failed to upload", err.Error())
 		return path, fmt.Errorf("failed to upload file, %v", err)
 	}
 

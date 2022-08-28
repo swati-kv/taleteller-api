@@ -22,7 +22,7 @@ type Scene struct {
 	GeneratedAudioID    string     `db:"generated_audio_id,omitempty" json:"generated-audio-id,omitempty"`
 	GeneratedAudioPath  string     `json:"generated-audio-path,omitempty" db:"path,omitempty"`
 	BackgroundAudioPath string     `db:"background_audio_path,omitempty" json:"background-audio-path,omitempty"`
-	SelectedImage       string     `db:"selected_image,omitempty" json:"selected_image"`
+	SelectedImage       *string    `db:"selected_image,omitempty" json:"selected_image"`
 	Status              string     `db:"status,omitempty" json:"status,omitempty"`
 	SceneNumber         int        `db:"scene_number,omitempty" json:"scene-number,omitempty"`
 	SelectedImagePath   string     `db:"path" json:"selected-image-path,omitempty"`

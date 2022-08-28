@@ -164,11 +164,19 @@ func (s *service) processGenerateImage(response PyImageResponse, sceneID string,
 	}
 	logger.Infow(context.Background(), "processing generated image - ")
 
-	for _, image := range response.Data.GeneratedImage {
+	for x, image := range response.Data.GeneratedImage {
 		imageID, err := utils.NewGeneratorUtils().GenerateIDWithPrefix("image_")
 		if err != nil {
 			logger.Errorw(context.Background(), "error while generating image id", "error", err.Error())
 			return
+		}
+
+		if x == 0 {
+			_, err := s.store.UpdateScene(context.Background(), "", sceneID, imageID)
+			if err != nil {
+				logger.Errorw(context.Background(), "error while generating image id", "error", err.Error())
+				return
+			}
 		}
 
 		awsService := utils.NewAWSService()
@@ -441,7 +449,7 @@ func (s *service) Publish(ctx context.Context, req []UpdateSceneOrderReq, storyI
 
 	awsService := utils.NewAWSService()
 	awsRequest := utils.UploadS3{
-		FileName:   vid.Data,
+		FileName:   "",
 		FileType:   "video",
 		FileFormat: "mp4",
 		FileBytes:  data,
