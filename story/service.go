@@ -402,14 +402,14 @@ func (s *service) Publish(ctx context.Context, req []UpdateSceneOrderReq, storyI
 		img, _ := ioutil.ReadAll(imageResp.Body)
 		image64 := base64.StdEncoding.EncodeToString(img)
 		images = append(images, image64)
-		generatedAudioResp, awsErr := http.Get(resp.BackgroundAudioPath)
+		generatedAudioResp, awsErr := http.Get(resp.GeneratedAudioPath)
 		if awsErr != nil {
 			return
 		}
 		ga, _ := ioutil.ReadAll(generatedAudioResp.Body)
 		ga64 := base64.StdEncoding.EncodeToString(ga)
 		generatedAudios = append(generatedAudios, ga64)
-		backgroundAudioResp, awsErr := http.Get(resp.GeneratedAudioPath)
+		backgroundAudioResp, awsErr := http.Get(resp.BackgroundAudioPath)
 		if awsErr != nil {
 			return
 		}
